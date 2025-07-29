@@ -3,6 +3,7 @@ name: Python API Tests
 on:
   push:
   pull_request:
+  workflow_dispatch:
 
 jobs:
   test:
@@ -29,7 +30,7 @@ jobs:
           pytest --html=reports/report.html --self-contained-html
 
       - name: Upload test report artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: pytest-report
           path: reports/report.html
