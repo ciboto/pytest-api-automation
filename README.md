@@ -2,8 +2,8 @@
 
 ![Python](https://img.shields.io/badge/Python-3.11-blue?style=for-the-badge&logo=python)
 ![Pytest](https://img.shields.io/badge/Pytest-Tested-brightgreen?style=for-the-badge&logo=pytest)
-![License](https://img.shields.io/badge/license-MIT-lightgrey.svg?style=for-the-badge)
-![CI/CD](https://img.shields.io/github/actions/workflow/status/<SEU_USUARIO>/<REPO>/python-tests.yml?style=for-the-badge)
+![License](https://img.shields.io/badge/License-CC_BY--NC--ND_4.0-lightgrey?style=for-the-badge)
+![CI/CD](https://img.shields.io/github/actions/workflow/status/ciboto/pytest-api-automation/python-tests.yml?style=for-the-badge)
 
 > Projeto com testes automatizados de API utilizando `pytest`, geração de relatórios HTML e pipeline de CI/CD no GitHub Actions.
 
@@ -74,6 +74,7 @@ pytest
 pytest --html=reports/report.html --self-contained-html
 ```
 Abra o arquivo `reports/report.html` em seu navegador para visualizar o resultado.
+![Report PW Preview](assets/pytest-report.PNG)
 ---
 
 ## ⚙️ CI/CD com GitHub Actions
@@ -84,7 +85,44 @@ Ele será executado automaticamente em:
 - Workflow dispatch (manual)
 
 E gera um relatório HTML como artefato do pipeline.
+```yaml
+name: Python API Tests
 
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          python -m venv venv
+          source venv/bin/activate
+          pip install -r requirements.txt
+
+      - name: Run tests with report
+        run: |
+          source venv/bin/activate
+          pytest --html=reports/report.html --self-contained-html
+
+      - name: Upload test report artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: pytest-report
+          path: reports/report.html
+```
 ---
 ## ⚖️ Licença
 Este projeto está licenciado sob a [CC BY-NC-ND 4.0](https://creativecommons.org/licenses/by-nc-nd/4.0/) - Consulte o arquivo [LICENSE](./LICENSE) para mais detalhes.
